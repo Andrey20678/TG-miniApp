@@ -36,3 +36,13 @@ class WebflowSettings(BaseSettings):
     collection_id : SecretStr
 
 webflow_settings = WebflowSettings()
+
+
+class MainSettings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file="config/main.env",
+        env_file_encoding="utf-8")
+    
+    port: int
+
+main_settings = MainSettings()

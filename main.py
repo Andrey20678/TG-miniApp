@@ -7,7 +7,7 @@ from bot.bot import bot_start, bot_stop
 from bot.webhook import hook as hook_ma
 from webflow.webhook import hook as hook_wf
 
-from settings import log
+from settings import log, main_settings as ms
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -35,4 +35,4 @@ app.add_middleware(
      )
 
 if __name__=="__main__":
-    uvicorn.run("main:app",port=3001)
+    uvicorn.run("main:app",port=ms.port)
