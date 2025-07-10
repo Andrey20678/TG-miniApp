@@ -14,10 +14,10 @@ class BotSettings(BaseSettings):
 
     bot_token   : SecretStr
     web_hook    : str
+    button_url  : str
     admin_id    : Optional[SecretStr]
     meeting_text: str = "meeting_text"
     button_text : str = "button_text"
-    button_url  : str
     help_text   : str = "help_text"
 
     def reload(self):

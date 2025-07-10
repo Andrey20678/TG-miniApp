@@ -1,4 +1,4 @@
-from settings import log,webflow_settings as ws
+from settings import log, webflow_settings as ws
 import aiohttp
 
 async def get_webflow_collection_items():
