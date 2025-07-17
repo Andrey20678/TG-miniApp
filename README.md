@@ -3,33 +3,35 @@
 
 bot.env
 ```.env
-BOT_TOKEN   = "Токен"
-WEB_HOOK    = "example.org"
-BUTTON_URL  = "example.org"
+BOT_TOKEN   = "Token"
+SECRET_KEY  = "Secret key"
 
 #Optional 
-ADMIN_ID    = <telegram_user_id>
-
-MEETING_TEXT= Добро пожаловать!
-BUTTON_TEXT = Главная страница
-HELP_TEXT   = Просто введи /start и нажми на кнопку
+ADMIN_ID    = "telegram_user_id"
 ```
-webflow.env (можно оставить как написано ниже, в даный момент не используется)
+webflow.env
 ```.env
-API_KEY       = "Ключ"
-COLLECTION_ID = "id коллекции cms"
+API_KEY       = "Token"
+COLLECTION_ID = "ID"
+SITE_ID       = "ID"
 ```
 
 Создать и\или активировать виртуальное окружение
-```commandline
+
+(Windows)
+```
 py -m venv .venv
-./.venv/Scripts/activate
+.\.venv\Scripts\activate
+```
+(Linux)
+```
+python3 -m venv .venv
+source .venv/bin/activate
 ```
 Установить зависимости
 ```commandline
 pip install fastapi[standard] aiogram pydantic-settings
 ```
 ### Запустить main.py
-(можно из проводника или находясь в корневой папке проекта)
 
-Для работы необходим хостинг веб сервера (Nginx, VS Code и др.)
+Для работы необходим хостинг веб сервера (Nginx, VS Code или др.)

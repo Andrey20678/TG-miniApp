@@ -1,0 +1,9 @@
+{
+    "meeting_text"  : "Добро пожаловать!",
+    "help_text"     : "Просто введи /start и нажми на кнопку",
+    "buttons":
+        [[{
+            "text"   : "Главная страница",
+            "url"    : "k1dp188k-3002.euw.devtunnels.ms"
+        }]]
+}
