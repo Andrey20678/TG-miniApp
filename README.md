@@ -1,20 +1,5 @@
 # Руководство по установке
-Перед использованием создать файлы в папке config
-
-bot.env
-```.env
-BOT_TOKEN   = "Token"
-SECRET_KEY  = "Secret key"
-
-#Optional 
-ADMIN_ID    = "telegram_user_id"
-```
-webflow.env
-```.env
-API_KEY       = "Token"
-COLLECTION_ID = "ID"
-SITE_ID       = "ID"
-```
+Перед использованием создать файлы в папке config: main.env, bot.env и webflow.env, примеры содержимого есть в подпапке example config
 
 Создать и\или активировать виртуальное окружение
 
@@ -30,7 +15,7 @@ source .venv/bin/activate
 ```
 Установить зависимости
 ```commandline
-pip install fastapi[standard] aiogram pydantic-settings
+pip install -r requirements.txt
 ```
 ### Запустить main.py
 

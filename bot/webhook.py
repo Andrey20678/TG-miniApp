@@ -1,7 +1,7 @@
 from aiogram.types import Update
 from fastapi import APIRouter,Request,HTTPException,status
 from bot.bot import bot,dp
-from settings import log, bot_settings as bs
+from config.settings import log, bot_settings as bs
 
 hook = APIRouter(
     prefix="/whma",

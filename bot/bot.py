@@ -5,8 +5,7 @@ from aiogram.filters import CommandStart, Command
 from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 from aiogram.exceptions import TelegramRetryAfter
 
-import settings
-from settings import log, bot_settings as bs, main_settings as ms
+from config.settings import log, bot_settings as bs, main_settings as ms
 
 wh_url = f"https://{ms.web_hook}/whma"
 
@@ -16,18 +15,20 @@ bot = Bot(
 dp = Dispatcher()
 
 
-async def send_message_to_admin(text:str):
+async def send_message_to_admin(text: str, echo: bool = True) -> bool:
     if bs.admin_id:
-        log.info(f"Message \"{text}\" sent to admin")
+        if echo: log.info(f"Message \"{text}\" sent to admin")
         try:
             await bot.send_message(
                 chat_id=bs.admin_id.get_secret_value(),
                 text=text)
         except Exception as e:
             log.error(f"Failed to send message to admin, {str(e)}")
+            return False
+    return True
 
 
-async def bot_start():
+async def bot_start() -> None:
     log.info("Starting bot...")
     try:
         if (await bot.get_webhook_info()).url:
@@ -36,7 +37,7 @@ async def bot_start():
                 log.info("Webhook removed")
             except Exception as e:
                 log.error(f"Failed to remove existing webhook, {str(e)}")
-                await send_message_to_admin(f"Failed to remove existing webhook, {str(e)}")
+                await send_message_to_admin(f"Failed to remove existing webhook, {str(e)}", echo=False)
 
         await bot.set_webhook(
             url                  = wh_url,
@@ -49,10 +50,11 @@ async def bot_start():
         await send_message_to_admin("Bot started")
     except Exception as e:
         log.error(f"Failed to set webhook, {str(e)}")
-        await send_message_to_admin(f"Failed to set webhook, {str(e)}")
+        await send_message_to_admin(f"Failed to set webhook, {str(e)}", echo=False)
+        raise e
     
 
-async def bot_stop():
+async def bot_stop() -> None:
     log.info("Shutting down bot...")
 
     try:
@@ -60,32 +62,29 @@ async def bot_stop():
         log.info("Webhook removed")
     except Exception as e:
         log.error(f"Failed to remove webhook, {str(e)}")
-        await send_message_to_admin(f"Failed to remove webhook, {str(e)}")
+        await send_message_to_admin(f"Failed to remove webhook, {str(e)}", echo=False)
 
     try:
+        await send_message_to_admin("Bot stopped")
         await bot.close()
         log.info("Bot stopped successfully")
-        await send_message_to_admin("Bot stopped successfully")
     except TelegramRetryAfter as e:
         log.error(e)
-        await send_message_to_admin(str(e))
+        await send_message_to_admin(str(e), echo=False)
+        raise e
 
 
-def reply_build(buttons_list: list[list[settings.Button]]):
-    keyboard = []
-    for line in buttons_list:
-        buttons = []
-        for button in line:
-            buttons.append(InlineKeyboardButton(
-                text=button.text,
-                web_app=WebAppInfo(url=f"https://{button.url}")))
-        keyboard.append(buttons)
-    return InlineKeyboardMarkup(inline_keyboard=keyboard)
 
+
+def reply_build() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(inline_keyboard=
+        [[InlineKeyboardButton(text=bs.button_text, web_app=WebAppInfo(url=bs.button_url))]]
+        )
+reply = reply_build()
 
 @dp.message(CommandStart(ignore_case=True))
 async def cmd_start(message: Message):
-    await message.answer(text=bs.meeting_text, reply_markup=reply_build(bs.buttons))
+    await message.answer(text=bs.meeting_text, reply_markup=reply)
     
 
 @dp.message(Command("help",ignore_case=True))
@@ -97,6 +96,8 @@ async def cmd_help(message: Message):
 async def admin_cmd_reload(message: Message):
     if message.from_user.id == int(bs.admin_id.get_secret_value()):
         bs.reload()
+        global reply
+        reply = reply_build()
         log.info("Config reloaded")
         await message.answer(text="reloaded")
     await cmd_start(message)

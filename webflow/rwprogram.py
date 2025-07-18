@@ -1,10 +1,11 @@
 import aiofiles, json
-from settings import log
-from webflow.client import webflow as wf
+from config.settings import log
+from webflow.client import WebflowClient
 
-filename = "program.json"
+wf_client = WebflowClient()
+filename = "file.json"
 
-async def read_prg(filename: str = filename):
+async def read_file(filename: str = filename):
     try:
         async with aiofiles.open(filename,"r") as f:
             data = await f.read()
@@ -13,9 +14,10 @@ async def read_prg(filename: str = filename):
     except Exception as e:
         log.error(f"Failed to read file {e}")
 
-async def write_prg(filename: str = filename):
+
+async def write_file(filename: str = filename) -> bool:
     try:
-        spk = await wf.get_speakers()
+        spk = await wf_client.get_collection_items()
         if not spk:
             log.error("There is nothing to write to the file")
             return False
@@ -24,4 +26,5 @@ async def write_prg(filename: str = filename):
             await f.close()
             return True
     except Exception as e:
-        log.error(f"Failed to write file {e}")
+        log.error(f"Failed to write to the file {e}")
+    return False

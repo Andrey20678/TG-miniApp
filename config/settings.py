@@ -19,7 +19,8 @@ class BotSettings(BaseSettings):
     secret_key  : SecretStr = SecretStr("SetSecretKeyImmediatelyInConfig")
     meeting_text: str = "meeting_text"
     help_text   : str = "help_text"
-    buttons     : list[list[Button]]
+    button_text : str
+    button_url  : str
 
     def load(self = None):
         return BotSettings.model_validate(json.load(open("config/bot.json","r",encoding="utf-8")))
